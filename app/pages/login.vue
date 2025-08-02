@@ -27,6 +27,10 @@
 <script setup lang="ts">
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
+definePageMeta({
+  layout: 'login',
+});
+
 const email = ref('');
 const password = ref('');
 const error = ref('');
