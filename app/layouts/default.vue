@@ -15,7 +15,7 @@
       </nav>
     </header>
 
-    <main class="flex-1 container mx-auto px-4 mt-14 mb-14 overflow-auto  ">
+    <main class="flex-1 container mx-auto px-4 mb-24 mt-16 py-2 overflow-auto  ">
       <Breadcrumb />
       <slot />
     </main>

@@ -1,8 +1,7 @@
 <template>
   <div>
-    <h1>Customers</h1>
     <div>
-      <CustomerForm />
+
     </div>
     <CustomerList />
   </div>

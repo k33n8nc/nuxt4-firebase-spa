@@ -1,8 +1,6 @@
 <template>
-  <div class="container max-w-3xl p-4 mx-auto">
-    <div class="mt-6">
-      Dashboard
-    </div>
+  <div class="mt-6">
+    Dashboard
   </div>
 </template>
 

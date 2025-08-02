@@ -3,12 +3,12 @@
     <div v-if="isLoading">Loading customers...</div>
       <div v-for="customer in customerStore.customers"
            :key="customer.id"
-           class="shadow"
+           class="shadow rounded"
       >
         <NuxtLink :to="{ name: 'customers-id', params: { id: customer.id } }">
           <div class="p-6 text-sm text-gray-700">
-            <p>{{ customer.commercial_name }}</p>
-            <p>reg: 100</p>
+            <p class="text-sm font-medium">{{ customer.city }}</p>
+            <p class="text-lg">{{ customer.commercial_name }}</p>
           </div>
         </NuxtLink>
       </div>
@@ -29,7 +29,6 @@ onMounted(async () => {
     await customerStore.fetchCustomers();
   } catch (error) {
     console.error("Failed to fetch customers:", error);
-    // Optionally, you could add a user-facing error message here
   } finally {
     isLoading.value = false;
   }
