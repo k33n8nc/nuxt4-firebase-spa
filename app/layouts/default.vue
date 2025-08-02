@@ -4,10 +4,9 @@
       <nav class="container mx-auto h-full flex items-center justify-between px-4">
         <div class="flex items-center gap-4">
           <div>
-            <h1 class="font-bold">Nuxt 4 + Tawilwind 4 Starter</h1>
-            <small>See readme and package.json for more info.</small>
+            <h1 class="font-bold">C8X</h1>
           </div>
-          <NuxtLink to="/">Returns</NuxtLink>
+          <NuxtLink to="/">Dashboard</NuxtLink>
           <NuxtLink to="/customers">Customers</NuxtLink>
         </div>
         <Button v-if="user" @click="logout">

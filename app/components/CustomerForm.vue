@@ -8,6 +8,7 @@
            class="border border-gray-200 rounded py-2 px-3"/>
     <input v-model="formData.house_number"
            placeholder="House Number"
+           @blur="fetchAddressDetails"
            class="border border-gray-200 rounded py-2 px-3"/>
     <input v-model="formData.street_name"
            placeholder="Street Name"
@@ -47,19 +48,27 @@ const formData = ref(createEmptyForm());
 // Watch for prop changes to either populate the form for editing or reset it for creating
 watch(() => props.customer, (newCustomer) => {
   if (newCustomer) {
-    // When a customer prop is passed, populate the form with its data
-    formData.value = {
-      commercial_name: newCustomer.commercial_name,
-      street_name: newCustomer.street_name,
-      house_number: newCustomer.house_number,
-      postal_code: newCustomer.postal_code,
-      city: newCustomer.city,
-    };
+    formData.value = { ...newCustomer };
   } else {
-    // When the prop is null or undefined, reset to a blank state
     formData.value = createEmptyForm();
   }
-}, { immediate: true }); // immediate: true ensures this runs on component setup
+}, { immediate: true });
+
+const fetchAddressDetails = async () => {
+  const { postal_code, house_number } = formData.value;
+  if (postal_code && house_number) {
+    try {
+      const data = await $fetch(`/api/postcode?postcode=${postal_code}&number=${house_number}`);
+      if (data && data.street && data.city) {
+        formData.value.street_name = data.street;
+        formData.value.city = data.city;
+      }
+    } catch (error) {
+      console.error("Error fetching address details:", error);
+      // Silently fail as requested, but log for debugging
+    }
+  }
+};
 
 const submitForm = async () => {
   if (!formData.value.commercial_name) {
@@ -72,7 +81,6 @@ const submitForm = async () => {
     alert('Customer updated!');
   } else {
     await customerStore.addCustomer(formData.value);
-    // Reset form using the single source of truth
     formData.value = createEmptyForm();
   }
 };

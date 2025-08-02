@@ -2,17 +2,6 @@ import { defineStore } from 'pinia';
 import { collection, getDocs, addDoc, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, type DocumentData } from 'firebase/firestore';
 import { useNuxtApp } from '#app';
 
-// Keep the Customer interface for type safety
-export interface Customer {
-    id: string;
-    city: string;
-    commercial_name: string;
-    house_number: string;
-    postal_code: string;
-    street_name: string;
-    createdAt?: Date; // Make createdAt optional as old docs might not have it
-}
-
 export const useCustomerStore = defineStore('customerStore', {
     state: () => ({
         customers: [] as Customer[],
@@ -84,7 +73,7 @@ export const useCustomerStore = defineStore('customerStore', {
                 await updateDoc(customerDocRef, updatedData);
 
                 // Optimistically update state
-                const index = this.customers.findIndex(c => c.id === customerId);
+                const index = this.customers.findIndex((c: Customer) => c.id === customerId);
                 if (index !== -1) {
                     this.customers[index] = { ...this.customers[index], ...updatedData } as Customer;
                 }
@@ -98,7 +87,7 @@ export const useCustomerStore = defineStore('customerStore', {
                 const db = this._getDB();
                 await deleteDoc(doc(db, "customers", customerId));
                 // Optimistically update state
-                this.customers = this.customers.filter(c => c.id !== customerId);
+                this.customers = this.customers.filter((c: Customer) => c.id !== customerId);
             } catch (error) {
                 console.error("Error removing customer:", error);
             }
