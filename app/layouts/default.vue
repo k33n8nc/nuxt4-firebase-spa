@@ -10,9 +10,9 @@
           <NuxtLink to="/">Returns</NuxtLink>
           <NuxtLink to="/customers">Customers</NuxtLink>
         </div>
-        <button v-if="user" @click="logout" class="px-4 py-2 font-bold text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
+        <Button v-if="user" @click="logout">
           Logout
-        </button>
+        </Button>
       </nav>
     </header>
 

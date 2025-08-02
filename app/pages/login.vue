@@ -14,9 +14,9 @@
         </div>
       </div>
       <div class="mt-6">
-        <button type="submit" class="w-full px-4 py-2 font-bold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <Button type="submit">
           Login
-        </button>
+        </Button>
       </div>
       <p v-if="error" class="mt-4 text-sm text-red-600">{{ error }}</p>
     </form>

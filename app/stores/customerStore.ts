@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
-import { collection, getDocs, addDoc, serverTimestamp, doc, getDoc, type DocumentData } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, type DocumentData } from 'firebase/firestore';
+import { useNuxtApp } from '#app';
 
-// Assuming a type definition for Customer exists, similar to CustomerReturn
-// If not, we should create one in shared/types/customer.ts
+// Keep the Customer interface for type safety
 export interface Customer {
     id: string;
     city: string;
@@ -10,92 +10,98 @@ export interface Customer {
     house_number: string;
     postal_code: string;
     street_name: string;
-    createdAt: Date;
+    createdAt?: Date; // Make createdAt optional as old docs might not have it
 }
 
-export const useCustomerStore = defineStore('customerStore', () => {
-    // Get the firestore instance from our plugin
-    const { $firestore } = useNuxtApp();
-    const customersCollection = collection($firestore, 'customers');
+export const useCustomerStore = defineStore('customerStore', {
+    state: () => ({
+        customers: [] as Customer[],
+    }),
 
-    // State
-    const customers = ref<Customer[]>([]);
-    const currentCustomer = ref<Customer | null>(null);
-    const isLoading = ref(false);
+    actions: {
+        _getDB() {
+            const { $firestore } = useNuxtApp();
+            return $firestore;
+        },
 
-    // Actions
-    async function fetchCustomers() {
-        isLoading.value = true;
-        try {
-            const querySnapshot = await getDocs(customersCollection);
-
-            customers.value = querySnapshot.docs.map((doc: DocumentData) => {
-                const data = doc.data();
-                return {
-                    id: doc.id,
-                    city: data.city,
-                    commercial_name: data.commercial_name,
-                    house_number: data.house_number,
-                    postal_code: data.postal_code,
-                    street_name: data.street_name,
-                    createdAt: data.createdAt?.toDate() ?? new Date(),
-                } as Customer;
-            });
-        } catch (error) {
-            console.error("Error fetching customers: ", error);
-        } finally {
-            isLoading.value = false;
-        }
-    }
-
-    async function fetchCustomerById(id: string) {
-        isLoading.value = true;
-        try {
-            const customerDocRef = doc($firestore, 'customers', id);
-            const docSnap = await getDoc(customerDocRef);
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                currentCustomer.value = {
-                    id: docSnap.id,
-                    city: data.city,
-                    commercial_name: data.commercial_name,
-                    house_number: data.house_number,
-                    postal_code: data.postal_code,
-                    street_name: data.street_name,
-                    createdAt: data.createdAt?.toDate() ?? new Date(),
-                } as Customer;
-            } else {
-                console.log("No such document!");
-                currentCustomer.value = null;
+        async fetchCustomers() {
+            try {
+                const db = this._getDB();
+                const customersCollection = collection(db, 'customers');
+                const querySnapshot = await getDocs(customersCollection);
+                this.customers = querySnapshot.docs.map((doc: DocumentData) => {
+                    const data = doc.data();
+                    return {
+                        id: doc.id,
+                        ...data,
+                        createdAt: data.createdAt?.toDate(),
+                    } as Customer;
+                });
+            } catch (error) {
+                console.error("Error fetching customers:", error);
             }
-        } catch (error) {
-            console.error("Error fetching customer: ", error);
-        } finally {
-            isLoading.value = false;
-        }
-    }
+        },
 
-    async function addCustomer(newCustomer: Omit<Customer, 'id' | 'createdAt'>) {
-        isLoading.value = true;
-        try {
-            await addDoc(customersCollection, {
-                ...newCustomer,
-                createdAt: serverTimestamp(),
-            });
-            await fetchCustomers(); // Refetch to update the list
-        } catch (error) {
-            console.error("Error adding customer: ", error);
-        } finally {
-            isLoading.value = false;
-        }
-    }
+        async fetchCustomerById(id: string): Promise<Customer | null> {
+            try {
+                const db = this._getDB();
+                const customerDocRef = doc(db, 'customers', id);
+                const docSnap = await getDoc(customerDocRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    return {
+                        id: docSnap.id,
+                        ...data,
+                        createdAt: data.createdAt?.toDate(),
+                    } as Customer;
+                }
+                return null;
+            } catch (error) {
+                console.error("Error fetching customer:", error);
+                return null;
+            }
+        },
 
-    return {
-        customers,
-        currentCustomer,
-        isLoading,
-        fetchCustomers,
-        fetchCustomerById,
-        addCustomer,
-    };
+        async addCustomer(newCustomer: Omit<Customer, 'id' | 'createdAt'>) {
+            try {
+                const db = this._getDB();
+                const customersCollection = collection(db, 'customers');
+                const docRef = await addDoc(customersCollection, {
+                    ...newCustomer,
+                    createdAt: serverTimestamp(),
+                });
+                // Optimistically update state
+                this.customers.push({ id: docRef.id, ...newCustomer });
+            } catch (error) {
+                console.error("Error adding customer:", error);
+            }
+        },
+
+        async updateCustomer(customerId: string, updatedData: Partial<Omit<Customer, 'id'>>) {
+            try {
+                const db = this._getDB();
+                const customerDocRef = doc(db, "customers", customerId);
+                await updateDoc(customerDocRef, updatedData);
+
+                // Optimistically update state
+                const index = this.customers.findIndex(c => c.id === customerId);
+                if (index !== -1) {
+                    this.customers[index] = { ...this.customers[index], ...updatedData } as Customer;
+                }
+            } catch (error) {
+                console.error("Error updating customer:", error);
+            }
+        },
+
+        async removeCustomer(customerId: string) {
+            try {
+                const db = this._getDB();
+                await deleteDoc(doc(db, "customers", customerId));
+                // Optimistically update state
+                this.customers = this.customers.filter(c => c.id !== customerId);
+            } catch (error) {
+                console.error("Error removing customer:", error);
+            }
+        }
+    },
 });
