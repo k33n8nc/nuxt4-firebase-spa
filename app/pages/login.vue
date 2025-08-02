@@ -40,7 +40,7 @@ const login = async () => {
   const auth = getAuth();
   try {
     await signInWithEmailAndPassword(auth, email.value, password.value);
-    router.push('/');
+    await router.push('/');
   } catch (e: any) {
     error.value = e.message;
   }

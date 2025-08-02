@@ -16,6 +16,7 @@
     </header>
 
     <main class="flex-1 container mx-auto px-4 mt-14 mb-14 overflow-auto  ">
+      <Breadcrumb />
       <slot />
     </main>
 
@@ -32,6 +33,7 @@
 <script setup lang="ts">
 import { getAuth, signOut } from 'firebase/auth';
 import { useAuth } from '~/composables/useAuth';
+import Breadcrumb from '~/components/Breadcrumb.vue';
 
 const { user } = useAuth();
 const router = useRouter();
@@ -39,6 +41,6 @@ const router = useRouter();
 const logout = async () => {
   const auth = getAuth();
   await signOut(auth);
-  router.push('/login');
+  await router.push('/login');
 };
 </script>
