@@ -1,12 +1,17 @@
 <template>
-  <div>
+  <div class="grid grid-cols-3 gap-4">
     <div v-if="isLoading">Loading customers...</div>
-    <ul v-else-if="customerStore.customers.length">
-      <li v-for="customer in customerStore.customers" :key="customer.id">
-        <NuxtLink :to="{ name: 'customers-id', params: { id: customer.id } }">{{ customer.commercial_name }}</NuxtLink>
-      </li>
-    </ul>
-    <div v-else>No customers found. You can add one using the form above.</div>
+      <div v-for="customer in customerStore.customers"
+           :key="customer.id"
+           class="shadow"
+      >
+        <NuxtLink :to="{ name: 'customers-id', params: { id: customer.id } }">
+          <div class="p-6 text-sm text-gray-700">
+            <p>{{ customer.commercial_name }}</p>
+            <p>reg: 100</p>
+          </div>
+        </NuxtLink>
+      </div>
   </div>
 </template>
 

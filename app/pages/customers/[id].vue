@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h1 class="text-2xl font-bold mb-4">Edit Customer</h1>
     <div v-if="isLoading">Loading customer details...</div>
     <CustomerForm v-else-if="customer" :customer="customer" />
     <div v-else>
       <p>Customer not found.</p>
     </div>
     <NuxtLink to="/customers" class="mt-4 inline-block text-blue-500 hover:underline">Back to Customers</NuxtLink>
+
   </div>
 </template>
 
