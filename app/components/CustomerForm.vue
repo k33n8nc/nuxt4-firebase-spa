@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { useCustomerForm } from '~/composables/useCustomerForm';
-import type { Customer } from '~/types';
+import type { Customer } from '#shared/types/customer';
 
 const { isCustomerFormOpen, editingCustomer, closeCustomerForm } = useCustomerForm();
 const customerStore = useCustomerStore();
