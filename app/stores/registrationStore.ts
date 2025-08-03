@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { collection, getDocs, addDoc, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, type DocumentData } from 'firebase/firestore';
 import { useNuxtApp } from '#app';
-import type { Registration } from '../../shared/types/registration';
+import type { Registration } from '#shared/types/registration';
 
 export const useRegistrationStore = defineStore('registrationStore', {
     state: () => ({

@@ -28,7 +28,6 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { useRegistrationStore } from '@/stores/registrationStore';
-import type { Registration } from '@/../shared/types/registration';
 
 const props = defineProps({
   customerId: {

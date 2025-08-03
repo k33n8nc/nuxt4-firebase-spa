@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import type { Customer } from '~/types'
+import type { Customer } from '#shared/types/customer'
 
 const isCustomerFormOpen = ref(false)
 const editingCustomer = ref<Customer | null>(null)
