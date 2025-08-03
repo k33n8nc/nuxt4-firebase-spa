@@ -1,7 +1,7 @@
 <template>
-  <nav class="breadcrumb" aria-label="breadcrumbs">
-    <ul class="flex bg-gray-50 px-4 py-2 mb-6 rounded-md text-sm text-gray-400">
-      <li v-for="(crumb, index) in breadcrumbs" :key="index" :class="{ 'text-gray-400': index === breadcrumbs.length - 1 }">
+  <nav aria-label="breadcrumbs" class="mb-6 mt-2">
+    <ul class="flex text-sm">
+      <li v-for="(crumb, index) in breadcrumbs" :key="index" :class="{ '': index === breadcrumbs.length - 1 }">
         <NuxtLink :to="crumb.to" :class="{ 'underline': index < breadcrumbs.length - 1 }">
           {{ crumb.text }}
         </NuxtLink>

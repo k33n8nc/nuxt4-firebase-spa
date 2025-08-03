@@ -1,7 +1,11 @@
 <template>
   <div>
-    <div class="flex justify-end mb-4">
-      <Button @click="openCustomerForm()">Add Customer</Button>
+    <Breadcrumb />
+    <div class="flex justify-between items-center">
+      <input type="text" placeholder="Search" class="h-10 px-2 flex-1 mr-4 border border-gray-300 rounded">
+      <Button @click="openCustomerForm()">
+        <Icon name="fa-solid:plus" />
+      </Button>
     </div>
     <CustomerList />
     <CustomerForm />
@@ -9,8 +13,6 @@
 </template>
 
 <script setup lang="ts">
-import CustomerList from '~/components/CustomerList.vue';
-import CustomerForm from '~/components/CustomerForm.vue';
 import { useBreadcrumbs } from '~/composables/useBreadcrumbs';
 import { useCustomerForm } from '~/composables/useCustomerForm';
 

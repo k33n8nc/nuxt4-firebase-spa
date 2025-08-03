@@ -1,17 +1,19 @@
 <template>
   <div>
+    <Breadcrumb />
+    <div class="flex justify-between items-center">
+    <input type="text" placeholder="Search" class="h-10 px-2 flex-1 mr-4 border border-gray-300 rounded">
+    <Button @click="openCustomerForm(customer)">
+      <Icon name="fa-solid:pen" />
+    </Button>
+    </div>
     <div v-if="isLoading">Loading customer details...</div>
     <div v-else-if="customer">
-      <div class="flex justify-end mb-4">
-        <Button @click="openCustomerForm(customer)">Edit Customer</Button>
-      </div>
-      <h1 class="text-2xl font-bold">{{ customer.commercial_name }}</h1>
-      <!-- Registrations will be displayed here later -->
+      <RegistrationList :customer-id="customerId" />
     </div>
     <div v-else>
       <p>Customer not found.</p>
     </div>
-    <NuxtLink to="/customers" class="mt-4 inline-block text-blue-500 hover:underline">Back to Customers</NuxtLink>
     <CustomerForm />
   </div>
 </template>
@@ -21,6 +23,7 @@ import { ref, watch, computed } from 'vue';
 import { useCustomerStore, type Customer } from '~/stores/customerStore';
 import { useRoute } from 'vue-router';
 import CustomerForm from '~/components/CustomerForm.vue';
+import RegistrationList from '~/components/RegistrationList.vue';
 import { useBreadcrumbs } from '~/composables/useBreadcrumbs';
 import { useCustomerForm } from '~/composables/useCustomerForm';
 
