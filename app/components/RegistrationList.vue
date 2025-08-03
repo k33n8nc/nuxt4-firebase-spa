@@ -10,6 +10,9 @@
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
+            <th scope="col" class="relative px-6 py-3">
+              <span class="sr-only">Edit</span>
+            </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -18,6 +21,11 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ registration.type }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ registration.volume }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ registration.year }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-right">
+              <Button @click="openRegistrationForm(registration)">
+                <Icon name="fa-solid:pen" />
+              </Button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -27,7 +35,8 @@
 
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
-import { useRegistrationStore } from '@/stores/registrationStore';
+import { useRegistrationStore } from '~/stores/registrationStore';
+import { useRegistrationForm } from '~/composables/useRegistrationForm';
 
 const props = defineProps({
   customerId: {
@@ -37,6 +46,7 @@ const props = defineProps({
 });
 
 const registrationStore = useRegistrationStore();
+const { openRegistrationForm } = useRegistrationForm();
 
 const isLoading = computed(() => registrationStore.isLoading);
 const registrations = computed(() => registrationStore.registrations);
