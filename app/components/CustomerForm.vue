@@ -50,13 +50,14 @@ const createEmptyForm = (): Omit<Customer, "id" | "createdAt"> => ({
   city: "",
 });
 
-const formData = ref(createEmptyForm());
+const formData = ref<Omit<Customer, "id" | "createdAt">>(createEmptyForm());
 
 watch(
   editingCustomer,
   (newCustomer) => {
     if (newCustomer) {
-      formData.value = { ...newCustomer };
+      const { id, createdAt, ...customerData } = newCustomer;
+      formData.value = customerData;
     } else {
       formData.value = createEmptyForm();
     }
