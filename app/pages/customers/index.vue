@@ -24,6 +24,6 @@ const { openCustomerForm } = useCustomerForm();
 
 setBreadcrumbs([
   { text: 'Dashboard', to: '/' },
-  { text: 'Customers', to: '/customers' },
+  { text: 'Customers' },
 ]);
 </script>

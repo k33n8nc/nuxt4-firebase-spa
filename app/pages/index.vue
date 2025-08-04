@@ -33,6 +33,6 @@ definePageMeta({
 const { setBreadcrumbs } = useBreadcrumbs();
 
 setBreadcrumbs([
-  { text: 'Dashboard', to: '/' },
+  { text: 'Dashboard'},
 ]);
 </script>

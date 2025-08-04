@@ -1,18 +1,11 @@
 <template>
   <div>
+    <ThreeCards class="mb-12" :customer="customer"/>
     <div class="flex justify-between items-center">
       <input type="text"
              placeholder="Search"
              class="h-10 px-2 flex-1 mr-4 border border-gray-300 rounded"
       >
-      <div class="flex space-x-2">
-        <Button @click="openCustomerForm(customer)">
-          <Icon name="fa-solid:pen" />
-        </Button>
-        <Button @click="openRegistrationForm()">
-          <Icon name="fa-solid:plus" />
-        </Button>
-      </div>
     </div>
     <div v-if="isLoading">
       Loading customer details...
@@ -31,9 +24,7 @@ import { ref, watch, computed } from 'vue';
 import { useCustomerStore } from '~/stores/customerStore';
 import { useRoute } from 'vue-router';
 import { useBreadcrumbs } from '~/composables/useBreadcrumbs';
-import { useCustomerForm } from '~/composables/useCustomerForm';
-import { useRegistrationForm } from '~/composables/useRegistrationForm';
-import type { Customer } from '~/shared/types/customer';
+import type { Customer } from '#shared/types/customer';
 import RegistrationForm from '~/components/RegistrationForm.vue';
 
 const customerStore = useCustomerStore();
@@ -43,8 +34,6 @@ const customerId = computed(() => Array.isArray(route.params.id) ? route.params.
 const customer = ref<Customer | null>(null);
 const isLoading = ref(true);
 const { setBreadcrumbs } = useBreadcrumbs();
-const { openCustomerForm } = useCustomerForm();
-const { openRegistrationForm } = useRegistrationForm();
 
 watch(customerId, async (newId) => {
   if (newId) {
@@ -55,7 +44,7 @@ watch(customerId, async (newId) => {
     const crumbs = [
       { text: 'Dashboard', to: '/' },
       { text: 'Customers', to: '/customers' },
-      { text: customer.value?.commercial_name || '', to: `/customers/${newId}` }
+      { text: customer.value?.commercial_name || '' }
     ];
     setBreadcrumbs(crumbs);
     isLoading.value = false;
