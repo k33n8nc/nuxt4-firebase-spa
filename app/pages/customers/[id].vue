@@ -25,7 +25,7 @@ import { useCustomerStore } from '~/stores/customerStore';
 import { useRoute } from 'vue-router';
 import { useBreadcrumbs } from '~/composables/useBreadcrumbs';
 import type { Customer } from '#shared/types/customer';
-import type { Registration } from '~/types';
+import type { Registration } from '#shared/types/registration';
 import RegistrationForm from '~/components/RegistrationForm.vue';
 
 const customerStore = useCustomerStore();
