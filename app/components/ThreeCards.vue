@@ -19,7 +19,7 @@
         <div class="flex justify-between items-center">
           <div>
             <p class="text-sm font-medium">Registrations</p>
-            <p class="text-lg">12</p>
+            <p class="text-lg">{{ registrationCount }}</p>
           </div>
           <Button @click.prevent="openRegistrationForm()" :disabled="!customer">
             <Icon name="fa-solid:plus" />
@@ -37,6 +37,7 @@ import type { Customer } from '#shared/types/customer';
 
 defineProps<{
   customer: Customer | null;
+  registrationCount: number;
 }>();
 
 const { openCustomerForm } = useCustomerForm();

@@ -34,9 +34,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, watch } from 'vue';
 import { useRegistrationStore } from '~/stores/registrationStore';
 import { useRegistrationForm } from '~/composables/useRegistrationForm';
+import type { Registration } from '#shared/types/registration';
 
 const props = defineProps({
   customerId: {
@@ -45,11 +46,17 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['update:registrations']);
+
 const registrationStore = useRegistrationStore();
 const { openRegistrationForm } = useRegistrationForm();
 
 const isLoading = computed(() => registrationStore.isLoading);
 const registrations = computed(() => registrationStore.registrations);
+
+watch(registrations, (newRegistrations: Registration[]) => {
+  emit('update:registrations', newRegistrations);
+}, { immediate: true, deep: true });
 
 onMounted(() => {
   if (props.customerId) {

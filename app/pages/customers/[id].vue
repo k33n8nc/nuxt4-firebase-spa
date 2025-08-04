@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ThreeCards class="mb-12" :customer="customer"/>
+    <ThreeCards class="mb-12" :customer="customer" :registration-count="registrationCount" />
     <div class="flex justify-between items-center">
       <input type="text"
              placeholder="Search"
@@ -10,11 +10,11 @@
     <div v-if="isLoading">
       Loading customer details...
     </div>
-    <RegistrationList v-else-if="customerId" :customer-id="customerId" />
+    <RegistrationList v-else-if="customerId" :customer-id="customerId" @update:registrations="handleRegistrationsUpdate" />
     <div v-else>
       <p>Customer not found.</p>
     </div>
-    <CustomerForm />
+    <CustomerForm @customer-updated="refreshData" />
     <RegistrationForm />
   </div>
 </template>
@@ -25,6 +25,7 @@ import { useCustomerStore } from '~/stores/customerStore';
 import { useRoute } from 'vue-router';
 import { useBreadcrumbs } from '~/composables/useBreadcrumbs';
 import type { Customer } from '#shared/types/customer';
+import type { Registration } from '~/types';
 import RegistrationForm from '~/components/RegistrationForm.vue';
 
 const customerStore = useCustomerStore();
@@ -32,14 +33,18 @@ const route = useRoute();
 const customerId = computed(() => Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
 
 const customer = ref<Customer | null>(null);
+const registrationCount = ref(0);
 const isLoading = ref(true);
 const { setBreadcrumbs } = useBreadcrumbs();
 
-watch(customerId, async (newId) => {
-  if (newId) {
+const handleRegistrationsUpdate = (registrations: Registration[]) => {
+  registrationCount.value = registrations.length;
+};
+
+const refreshData = async () => {
+  if (customerId.value) {
     isLoading.value = true;
-    customer.value = null; // Reset customer on new ID
-    customer.value = await customerStore.fetchCustomerById(newId);
+    customer.value = await customerStore.fetchCustomerById(customerId.value);
 
     const crumbs = [
       { text: 'Dashboard', to: '/' },
@@ -49,7 +54,9 @@ watch(customerId, async (newId) => {
     setBreadcrumbs(crumbs);
     isLoading.value = false;
   }
-}, { immediate: true });
+};
+
+watch(customerId, refreshData, { immediate: true });
 
 definePageMeta({
   middleware: 'auth',

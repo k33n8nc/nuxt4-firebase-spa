@@ -39,6 +39,8 @@
 import { useCustomerForm } from '~/composables/useCustomerForm';
 import type { Customer } from '#shared/types/customer';
 
+const emit = defineEmits(['customer-updated']);
+
 const { isCustomerFormOpen, editingCustomer, closeCustomerForm } = useCustomerForm();
 const customerStore = useCustomerStore();
 
@@ -87,6 +89,7 @@ const submitForm = async () => {
   } else {
     await customerStore.addCustomer(formData.value);
   }
+  emit('customer-updated');
   closeCustomerForm();
 };
 </script>
