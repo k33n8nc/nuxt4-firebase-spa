@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ThreeCards class="mb-12" :customer="customer" :registration-count="registrationCount" />
+    <ThreeCards class="mb-12" :customer="customer" />
     <div class="flex justify-between items-center">
       <input type="text"
              placeholder="Search"
@@ -10,22 +10,21 @@
     <div v-if="isLoading">
       Loading customer details...
     </div>
-    <RegistrationList v-else-if="customerId" :customer-id="customerId" @update:registrations="handleRegistrationsUpdate" />
+    <RegistrationList v-else-if="customerId" :customer-id="customerId" />
     <div v-else>
       <p>Customer not found.</p>
     </div>
-    <CustomerForm @customer-updated="refreshData" />
+    <CustomerForm @customer-updated="refreshCustomerData" />
     <RegistrationForm />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
-import { useCustomerStore } from '~/stores/customerStore';
 import { useRoute } from 'vue-router';
+import { useCustomerStore } from '~/stores/customerStore';
 import { useBreadcrumbs } from '~/composables/useBreadcrumbs';
 import type { Customer } from '#shared/types/customer';
-import type { Registration } from '#shared/types/registration';
 import RegistrationForm from '~/components/RegistrationForm.vue';
 
 const customerStore = useCustomerStore();
@@ -33,15 +32,10 @@ const route = useRoute();
 const customerId = computed(() => Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
 
 const customer = ref<Customer | null>(null);
-const registrationCount = ref(0);
 const isLoading = ref(true);
 const { setBreadcrumbs } = useBreadcrumbs();
 
-const handleRegistrationsUpdate = (registrations: Registration[]) => {
-  registrationCount.value = registrations.length;
-};
-
-const refreshData = async () => {
+const loadCustomer = async () => {
   if (customerId.value) {
     isLoading.value = true;
     customer.value = await customerStore.fetchCustomerById(customerId.value);
@@ -56,7 +50,20 @@ const refreshData = async () => {
   }
 };
 
-watch(customerId, refreshData, { immediate: true });
+const refreshCustomerData = async () => {
+  if (customerId.value) {
+    customer.value = await customerStore.fetchCustomerById(customerId.value);
+
+    const crumbs = [
+      { text: 'Dashboard', to: '/' },
+      { text: 'Customers', to: '/customers' },
+      { text: customer.value?.commercial_name || '' }
+    ];
+    setBreadcrumbs(crumbs);
+  }
+};
+
+watch(customerId, loadCustomer, { immediate: true });
 
 definePageMeta({
   middleware: 'auth',

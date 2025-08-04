@@ -31,15 +31,19 @@
 </template>
 
 <script setup lang="ts">
+import { computed, watch } from 'vue';
 import { useCustomerForm } from '~/composables/useCustomerForm';
 import { useRegistrationForm } from '~/composables/useRegistrationForm';
+import { useRegistrationStore } from '~/stores/registrationStore';
 import type { Customer } from '#shared/types/customer';
 
-defineProps<{
+const props = defineProps<{
   customer: Customer | null;
-  registrationCount: number;
 }>();
 
 const { openCustomerForm } = useCustomerForm();
 const { openRegistrationForm } = useRegistrationForm();
+
+const registrationStore = useRegistrationStore();
+const registrationCount = computed(() => registrationStore.registrations.length);
 </script>
