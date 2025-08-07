@@ -24,7 +24,16 @@
           <input type="number" id="year" v-model="formData.year" required
                  class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
         </div>
-        <Button type="submit" class="col-span-2">{{ editingRegistration ? 'Update Registration' : 'Add Registration' }}</Button>
+
+        <div class="col-span-2 flex justify-between mt-4">
+        <Button v-if="editingRegistration" @click="removeRegistration" type="button" class="bg-red-500 hover:bg-red-700 mr-3">
+          <Icon name="fa-solid:trash" />
+        </Button>
+        <Button type="submit" class="w-full">
+          {{ editingRegistration ? 'Update Registration' : 'Add Registration' }}
+        </Button>
+        </div>
+
       </form>
     </div>
   </div>
@@ -68,5 +77,12 @@ const submitForm = async () => {
     await registrationStore.addRegistration(customerId, formData.value);
   }
   closeRegistrationForm();
+};
+
+const removeRegistration = async () => {
+  if (editingRegistration.value) {
+    await registrationStore.removeRegistration(customerId, editingRegistration.value.id);
+    closeRegistrationForm();
+  }
 };
 </script>
