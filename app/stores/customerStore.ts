@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { collection, getDocs, addDoc, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, type DocumentData } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, type DocumentData, writeBatch } from 'firebase/firestore';
 import { useNuxtApp } from '#app';
 
 export const useCustomerStore = defineStore('customerStore', {
@@ -60,7 +60,7 @@ export const useCustomerStore = defineStore('customerStore', {
                     createdAt: serverTimestamp(),
                 });
                 // Optimistically update state
-                this.customers.push({ id: docRef.id, ...newCustomer });
+                this.customers.push({ id: docRef.id, ...newCustomer } as Customer);
             } catch (error) {
                 console.error("Error adding customer:", error);
             }
@@ -85,7 +85,20 @@ export const useCustomerStore = defineStore('customerStore', {
         async removeCustomer(customerId: string) {
             try {
                 const db = this._getDB();
-                await deleteDoc(doc(db, "customers", customerId));
+                const customerDocRef = doc(db, 'customers', customerId);
+                const registrationsColRef = collection(customerDocRef, 'registrations');
+
+                // Delete all registrations in a batch
+                const registrationsSnapshot = await getDocs(registrationsColRef);
+                const batch = writeBatch(db);
+                registrationsSnapshot.forEach((doc) => {
+                    batch.delete(doc.ref);
+                });
+                await batch.commit();
+
+                // Delete the customer document
+                await deleteDoc(customerDocRef);
+
                 // Optimistically update state
                 this.customers = this.customers.filter((c: Customer) => c.id !== customerId);
             } catch (error) {

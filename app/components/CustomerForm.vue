@@ -29,7 +29,14 @@
           <input type="text" id="city" v-model="formData.city" required
                  class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
         </div>
-        <Button type="submit" class="col-span-2">{{ editingCustomer ? 'Update Customer' : 'Add Customer' }}</Button>
+        <div class="col-span-2 flex justify-between mt-4">
+          <Button v-if="editingCustomer" @click="removeCustomer" type="button" class="bg-red-500 hover:bg-red-700 mr-3">
+            <Icon name="fa-solid:trash" />
+          </Button>
+          <Button type="submit" class="w-full">
+            {{ editingCustomer ? 'Update Customer' : 'Add Customer' }}
+          </Button>
+        </div>
       </form>
     </div>
   </div>
@@ -91,5 +98,14 @@ const submitForm = async () => {
   }
   emit('customer-updated');
   closeCustomerForm();
+};
+
+const removeCustomer = async () => {
+  if (editingCustomer.value) {
+    await customerStore.removeCustomer(editingCustomer.value.id);
+    emit('customer-updated');
+    closeCustomerForm();
+    await navigateTo('/customers');
+  }
 };
 </script>
