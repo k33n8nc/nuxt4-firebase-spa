@@ -1,27 +1,28 @@
 <template>
-<div class="w-md mx-auto">
-  <div class="shadow p-8 rounded-lg">
-    <h1 class="text-2xl font-bold text-center">Login</h1>
-    <form @submit.prevent="login">
-      <div class="space-y-4">
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-          <input v-model="email" type="email" id="email" required class="w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+  <div class="flex flex-col items-center justify-center bg-gray-100 h-screen overflow-y-auto">
+    <h1 class="font-medium text-center mb-4">Login to Paul van Dam</h1>
+    <div class="w-md mx-auto border-gray-200 shadow p-8 rounded-lg bg-white">
+      <form @submit.prevent="login">
+        <div class="space-y-4">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input v-model="email" type="email" id="email" required class="w-full px-3 py-2 mt-1 border-1 border border-gray-200 rounded-md">
+          </div>
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input v-model="password" type="password" id="password" required class="w-full px-3 py-2 mt-1 border border-gray-200 rounded-md">
+          </div>
         </div>
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-          <input v-model="password" type="password" id="password" required class="w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+        <div class="mt-6 flex justify-between items-center">
+          <NuxtLink to="/" class="underline text-sm">forgot password?</NuxtLink>
+          <Button type="submit">
+            Login
+          </Button>
         </div>
-      </div>
-      <div class="mt-6">
-        <Button type="submit">
-          Login
-        </Button>
-      </div>
-      <p v-if="error" class="mt-4 text-sm text-red-600">{{ error }}</p>
-    </form>
+        <p v-if="error" class="mt-4 text-sm text-red-600">{{ error }}</p>
+      </form>
+    </div>
   </div>
-</div>
 </template>
 
 <script setup lang="ts">
