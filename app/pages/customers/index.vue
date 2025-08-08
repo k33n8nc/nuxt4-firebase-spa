@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="flex justify-between items-center">
-      <input type="text" placeholder="Search" class="h-10 px-2 flex-1 mr-4 border border-gray-300 rounded">
+      <input type="text"
+             placeholder="Search"
+             class="h-10 px-2 mr-4 flex-1 border border-gray-300 rounded focus:outline-none focus:border-gray-800"
+      >
       <Button @click="openCustomerForm()">
         <Icon name="fa-solid:plus" />
       </Button>
