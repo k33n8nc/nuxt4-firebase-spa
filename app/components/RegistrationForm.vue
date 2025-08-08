@@ -4,9 +4,14 @@
       <button @click="closeRegistrationForm" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">&times;</button>
       <h2 class="text-2xl font-bold mb-4">{{ editingRegistration ? 'Edit Registration' : 'Add Registration' }}</h2>
       <form @submit.prevent="submitForm" class="grid grid-cols-2 gap-4">
-        <div class="col-span-2">
+        <div>
           <label for="registrationId" class="block text-sm font-medium text-gray-700">Registration ID</label>
           <input type="text" id="registrationId" v-model="formData.registrationId" required
+                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+        </div>
+        <div>
+          <label for="registrationLabel" class="block text-sm font-medium text-gray-700">Registration label</label>
+          <input type="text" id="registrationLabel" v-model="formData.registrationLabel"
                  class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
         </div>
         <div>
@@ -50,6 +55,7 @@ const customerId = route.params.id as string;
 
 const createEmptyForm = (): Omit<Registration, "id"> => ({
   registrationId: "",
+  registrationLabel: "",
   type: "",
   volume: 0,
   year: new Date().getFullYear(),
@@ -76,6 +82,7 @@ const submitForm = async () => {
   } else {
     await registrationStore.addRegistration(customerId, formData.value);
   }
+  formData.value = createEmptyForm();
   closeRegistrationForm();
 };
 

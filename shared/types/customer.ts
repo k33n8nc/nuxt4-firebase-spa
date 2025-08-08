@@ -5,5 +5,7 @@ export interface Customer {
     house_number: string;
     postal_code: string;
     street_name: string;
-    createdAt?: Date;
+    createdAt: Date;
+    email: string;
+    phone?: string;
 }
