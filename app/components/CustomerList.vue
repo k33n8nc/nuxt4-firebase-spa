@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-3 gap-4 mt-8">
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
     <div v-if="isLoading">Loading customers...</div>
       <div v-for="customer in customerStore.customers"
            :key="customer.id"

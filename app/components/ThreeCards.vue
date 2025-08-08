@@ -1,5 +1,5 @@
 <template>
-  <div class="grid md:grid-cols-3 gap-4 mt-8">
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
     <div class="shadow rounded">
       <div class="p-6 text-sm text-gray-700">
         <div class="flex justify-between items-center">
