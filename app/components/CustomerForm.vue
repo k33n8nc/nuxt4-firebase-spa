@@ -1,43 +1,47 @@
 <template>
   <div v-if="isCustomerFormOpen" class="fixed inset-0 z-40 bg-black/[var(--bg-opacity)] [--bg-opacity:50%]" @click.self="closeCustomerForm">
-    <div class="fixed top-0 right-0 h-full bg-white w-full md:w-120 shadow-lg p-6 z-50">
-      <button @click="closeCustomerForm" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">&times;</button>
-      <h2 class="text-2xl font-bold mb-4">{{ editingCustomer ? 'Edit Customer' : 'Add Customer' }}</h2>
-      <form @submit.prevent="submitForm" class="grid grid-cols-2 gap-4">
+    <div class="fixed top-0 right-0 h-full bg-white w-full md:w-120 shadow-lg z-50">
+      <div class="flex justify-between items-center bg-white h-14 px-6 border-b border-gray-200">
+        <h2 class="text-lg">{{ editingCustomer ? 'Edit Customer' : 'Add Customer' }}</h2>
+        <Button @click="closeCustomerForm" class="">
+          <Icon name="fa-solid:times" />
+        </Button>
+      </div>
+      <form @submit.prevent="submitForm" class="grid grid-cols-2 gap-4 px-6 py-8">
         <div class="col-span-2">
-          <label for="commercial_name" class="block text-sm font-medium text-gray-700">Commercial Name</label>
+          <label for="commercial_name" class="block text-sm text-gray-400">Commercial Name</label>
           <input type="text" id="commercial_name" v-model="formData.commercial_name" required
-                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-gray-800" />
         </div>
         <div>
-          <label for="postal_code" class="block text-sm font-medium text-gray-700">Postal Code</label>
+          <label for="postal_code" class="block text-sm text-gray-400">Postal Code</label>
           <input type="text" id="postal_code" v-model="formData.postal_code" required
-                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-gray-800" />
         </div>
         <div>
-          <label for="house_number" class="block text-sm font-medium text-gray-700">House Number</label>
+          <label for="house_number" class="block text-sm text-gray-400">House Number</label>
           <input type="text" id="house_number" v-model="formData.house_number" @blur="fetchAddressDetails" required
-                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-gray-800" />
         </div>
         <div>
-          <label for="street_name" class="block text-sm font-medium text-gray-700">Street Name</label>
+          <label for="street_name" class="block text-sm text-gray-400">Street Name</label>
           <input type="text" id="street_name" v-model="formData.street_name" required
-                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-gray-800" />
         </div>
         <div>
-          <label for="city" class="block text-sm font-medium text-gray-700">City</label>
+          <label for="city" class="block text-sm text-gray-400">City</label>
           <input type="text" id="city" v-model="formData.city" required
-                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-gray-800" />
         </div>
         <div class="col-span-2">
-          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+          <label for="email" class="block text-sm text-gray-400">Email</label>
           <input type="email" id="email" v-model="formData.email" required
-                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-gray-800" />
         </div>
         <div class="col-span-2">
-          <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+          <label for="phone" class="block text-sm text-gray-400">Phone</label>
           <input type="text" id="phone" v-model="formData.phone"
-                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none" />
+                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-gray-800" />
         </div>
 
         <div class="col-span-2 flex justify-between mt-4">
