@@ -1,3 +1,11 @@
+// @ToDo
+// Add a method that when registration add or remove is successfull
+// we add or subtract 1 from the totalCount on a seperate object.
+
+// @ToDo
+// An activityStore?
+// This way, we could enhance the dashboard and log latest actions by user.
+
 import { defineStore } from 'pinia';
 import { collection, getDocs, addDoc, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, type DocumentData } from 'firebase/firestore';
 import { useNuxtApp } from '#app';

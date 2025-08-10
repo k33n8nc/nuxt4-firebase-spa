@@ -23,7 +23,7 @@
     <footer class="bg-gray-200 h-14 fixed bottom-0 w-full">
       <div class="container mx-auto h-full flex items-center px-4">
         <p class="text-sm text-gray-500">
-          free to copy © <a href="https://cybernetix.nl" target="_blank">cybernetix {{ new Date().getFullYear() }}</a>
+          <a href="https://cybernetix.nl" target="_blank">{{ new Date().getFullYear() }} © Cybernetix - Make Advanced Simple </a>
         </p>
       </div>
     </footer>
