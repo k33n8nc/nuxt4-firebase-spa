@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 export interface Registration {
   id: string;
   registrationId: string;
@@ -5,4 +7,5 @@ export interface Registration {
   type: string;
   volume: number;
   year: number;
+  validTo: Timestamp;
 }

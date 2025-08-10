@@ -66,7 +66,7 @@ const emit = defineEmits(['customer-updated']);
 const { isCustomerFormOpen, editingCustomer, closeCustomerForm } = useCustomerForm();
 const customerStore = useCustomerStore();
 
-const createEmptyForm = (): Omit<Customer, "id" | "createdAt"> => ({
+const createEmptyForm = (): Omit<Customer, "id" | "createdAt" | "registrationExpireAlert"> => ({
   commercial_name: "",
   street_name: "",
   house_number: "",
@@ -76,7 +76,7 @@ const createEmptyForm = (): Omit<Customer, "id" | "createdAt"> => ({
   phone: "",
 });
 
-const formData = ref<Omit<Customer, "id" | "createdAt">>(createEmptyForm());
+const formData = ref<Omit<Customer, "id" | "createdAt" | "registrationExpireAlert">>(createEmptyForm());
 
 watch(
   editingCustomer,

@@ -9,7 +9,7 @@
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration ID</th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valid to</th>
             <th scope="col" class="relative px-6 py-3">
               <span class="sr-only">Edit</span>
             </th>
@@ -17,10 +17,14 @@
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="registration in registrations" :key="registration.id">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ registration.registrationId }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              {{ registration.registrationLabel ? registration.registrationLabel : registration.registrationId }}
+            </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ registration.type }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ registration.volume }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ registration.year }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{ registration.validTo.toDate().toLocaleDateString('nl-NL', { year: 'numeric', month: '2-digit', day: '2-digit' }) }}
+            </td>
             <td class="px-6 py-4 whitespace-nowrap text-right">
               <Button @click="openRegistrationForm(registration)">
                 <Icon name="fa-solid:pen" />

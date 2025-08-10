@@ -9,6 +9,10 @@
           <div class="p-6 text-sm text-gray-700">
             <p class="text-sm font-medium">{{ customer.city }}</p>
             <p class="text-lg">{{ customer.commercial_name }}</p>
+            <span v-if="customer.registrationExpireAlert" class="bg-gray-100 rounded-full px-3 py-1 text-xs font-medium">
+              <Icon name="fa-solid:calendar" class="mr-1" />
+              {{ customer.registrationExpireAlert.toDate().toLocaleDateString('nl-NL', { year: 'numeric', month: '2-digit', day: '2-digit' }) }}
+            </span>
           </div>
         </NuxtLink>
       </div>
