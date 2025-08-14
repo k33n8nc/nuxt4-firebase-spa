@@ -9,9 +9,9 @@
           <NuxtLink to="/">Dashboard</NuxtLink>
           <NuxtLink to="/customers">Customers</NuxtLink>
         </div>
-        <Button v-if="user" @click="logout">
+        <SquareButton v-if="user" @click="logout">
           Logout
-        </Button>
+        </SquareButton>
       </nav>
     </header>
 

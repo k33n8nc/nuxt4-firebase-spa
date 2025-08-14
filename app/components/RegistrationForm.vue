@@ -3,9 +3,9 @@
     <div class="fixed top-0 right-0 h-full bg-white w-full md:w-120 shadow-lg z-50">
       <div class="flex justify-between items-center bg-white h-14 px-6 border-b border-gray-200">
         <h2 class="text-lg">{{ editingRegistration ? 'Edit Registration' : 'Add Registration' }}</h2>
-        <Button @click="closeRegistrationForm" class="">
+        <SquareButton @click="closeRegistrationForm" class="">
           <Icon name="fa-solid:times" />
-        </Button>
+        </SquareButton>
       </div>
       <form @submit.prevent="submitForm" class="grid grid-cols-2 gap-4 px-6 py-8">
         <div>
@@ -41,12 +41,12 @@
         </div>
 
         <div class="col-span-2 flex justify-between mt-4">
-        <Button v-if="editingRegistration" @click="removeRegistration" type="button" class="bg-red-500 hover:bg-red-700 mr-3">
+        <SquareButton v-if="editingRegistration" @click="removeRegistration" type="button" class="bg-red-500 hover:bg-red-700 mr-3">
           <Icon name="fa-solid:trash" />
-        </Button>
-        <Button type="submit" class="w-full">
+        </SquareButton>
+        <SquareButton type="submit" class="w-full">
           {{ editingRegistration ? 'Update Registration' : 'Add Registration' }}
-        </Button>
+        </SquareButton>
         </div>
 
       </form>

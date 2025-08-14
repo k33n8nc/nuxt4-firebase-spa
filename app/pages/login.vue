@@ -15,9 +15,9 @@
         </div>
         <div class="mt-6 flex justify-between items-center">
           <NuxtLink to="/" class="underline text-sm">forgot password?</NuxtLink>
-          <Button type="submit">
+          <SquareButton type="submit">
             Login
-          </Button>
+          </SquareButton>
         </div>
         <p v-if="error" class="mt-4 text-sm text-red-600">{{ error }}</p>
       </form>

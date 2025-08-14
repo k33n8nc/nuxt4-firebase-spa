@@ -26,9 +26,9 @@
               {{ registration.validTo.toDate().toLocaleDateString('nl-NL', { year: 'numeric', month: '2-digit', day: '2-digit' }) }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right">
-              <Button @click="openRegistrationForm(registration)">
+              <SquareButton @click="openRegistrationForm(registration)">
                 <Icon name="fa-solid:pen" />
-              </Button>
+              </SquareButton>
             </td>
           </tr>
         </tbody>
