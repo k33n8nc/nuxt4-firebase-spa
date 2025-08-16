@@ -1,9 +1,15 @@
 <template>
   <div>
     <div class="mt-8">
+      <div class="flex">
+        <input type="text"
+               placeholder="Search"
+               class="h-10 px-2 flex-1 border border-gray-300 rounded focus:outline-none focus:border-gray-800"
+        >
+      </div>
       <div v-if="isLoading">Loading registrations...</div>
       <div v-else-if="registrations.length === 0">No registrations found.</div>
-      <div v-else>
+      <div v-else class="mt-8">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
           <tr>

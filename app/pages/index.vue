@@ -36,7 +36,7 @@
         <div class="flex justify-between items-center">
           <div>
             <p class="text-sm font-medium">Calendar</p>
-            <p class="text-lg">...</p>
+            <p class="text-lg">0</p>
           </div>
           <SquareButton>
             <Icon name="fa-solid:calendar-day" />
