@@ -35,7 +35,7 @@
             <p class="text-sm font-medium">Contact customer</p>
             <p class="text-lg">Plan inspections</p>
           </div>
-          <SquareButton disabled class="!bg-gray-200 !cursor-not-allowed">
+          <SquareButton @click.prevent="openEmailForm(customer)" :disabled="!customer">
             <Icon name="fa-solid:envelope" />
           </SquareButton>
         </div>
@@ -48,6 +48,7 @@
 <script setup lang="ts">
 import { useCustomerForm } from '~/composables/useCustomerForm';
 import { useRegistrationForm } from '~/composables/useRegistrationForm';
+import { useEmailForm } from '~/composables/useEmailForm';
 import { useRegistrationStore } from '~/stores/registrationStore';
 import type { Customer } from '#shared/types/customer';
 
@@ -57,6 +58,7 @@ const props = defineProps<{
 
 const { openCustomerForm } = useCustomerForm();
 const { openRegistrationForm } = useRegistrationForm();
+const { openEmailForm } = useEmailForm();
 
 const registrationStore = useRegistrationStore();
 const registrationCount = computed(() => registrationStore.registrations.length);

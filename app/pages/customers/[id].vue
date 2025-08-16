@@ -16,6 +16,7 @@
     </div>
     <CustomerForm @customer-updated="refreshCustomerData" />
     <RegistrationForm />
+    <EmailForm />
   </div>
 </template>
 
