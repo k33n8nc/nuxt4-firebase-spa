@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ThreeCards class="mb-12" :customer="customer" />
+    <ThreeCards />
     <div class="flex justify-between items-center">
       <input type="text"
              placeholder="Search"
@@ -14,57 +14,55 @@
     <div v-else>
       <p>Customer not found.</p>
     </div>
-    <CustomerForm @customer-updated="refreshCustomerData" />
+    <CustomerForm />
     <RegistrationForm />
     <EmailForm />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { watch, computed, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCustomerStore } from '~/stores/customerStore';
 import { useBreadcrumbs } from '~/composables/useBreadcrumbs';
-import type { Customer } from '#shared/types/customer';
 import RegistrationForm from '~/components/RegistrationForm.vue';
+import { storeToRefs } from 'pinia';
 
 const customerStore = useCustomerStore();
 const route = useRoute();
+
+// Create a reactive reference to the store's state. `customer` will automatically update.
+const { activeCustomer: customer } = storeToRefs(customerStore);
+
 const customerId = computed(() => Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
 
-const customer = ref<Customer | null>(null);
-const isLoading = ref(true);
+const isLoading = computed(() => !customer.value && !!customerId.value);
+
 const { setBreadcrumbs } = useBreadcrumbs();
 
-const loadCustomer = async () => {
-  if (customerId.value) {
-    isLoading.value = true;
-    customer.value = await customerStore.fetchCustomerById(customerId.value);
 
-    const crumbs = [
-      { text: 'Dashboard', to: '/' },
-      { text: 'Customers', to: '/customers' },
-      { text: customer.value?.commercial_name || '' }
-    ];
-    setBreadcrumbs(crumbs);
-    isLoading.value = false;
+// Watch for changes in the customer data (from the store) to update breadcrumbs
+watch(customer, (newCustomer) => {
+  setBreadcrumbs([
+    { text: 'Dashboard', to: '/' },
+    { text: 'Customers', to: '/customers' },
+    { text: newCustomer?.commercial_name || '', to: '' }
+  ]);
+});
+
+// Watch for changes in the route parameter to start listening to the correct customer
+watch(customerId, (newId) => {
+  if (newId) {
+    customerStore.listenToCustomerById(newId);
   }
-};
+}, { immediate: true });
 
-const refreshCustomerData = async () => {
-  if (customerId.value) {
-    customer.value = await customerStore.fetchCustomerById(customerId.value);
+// Clean up the listener when the component is unmounted
+onUnmounted(() => {
+  customerStore.stopListeningToCustomer();
+});
 
-    const crumbs = [
-      { text: 'Dashboard', to: '/' },
-      { text: 'Customers', to: '/customers' },
-      { text: customer.value?.commercial_name || '' }
-    ];
-    setBreadcrumbs(crumbs);
-  }
-};
 
-watch(customerId, loadCustomer, { immediate: true });
 
 definePageMeta({
   middleware: 'auth',

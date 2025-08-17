@@ -61,8 +61,6 @@
 import { useCustomerForm } from '~/composables/useCustomerForm';
 import type { Customer } from '#shared/types/customer';
 
-const emit = defineEmits(['customer-updated']);
-
 const { isCustomerFormOpen, editingCustomer, closeCustomerForm } = useCustomerForm();
 const customerStore = useCustomerStore();
 
@@ -113,7 +111,6 @@ const submitForm = async () => {
   } else {
     await customerStore.addCustomer(formData.value);
   }
-  emit('customer-updated');
   formData.value = createEmptyForm();
   closeCustomerForm();
 };
@@ -121,7 +118,6 @@ const submitForm = async () => {
 const removeCustomer = async () => {
   if (editingCustomer.value) {
     await customerStore.removeCustomer(editingCustomer.value.id);
-    emit('customer-updated');
     closeCustomerForm();
     await navigateTo('/customers');
   }
