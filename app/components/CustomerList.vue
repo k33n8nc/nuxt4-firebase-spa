@@ -7,13 +7,17 @@
       >
         <NuxtLink :to="{ name: 'customers-id', params: { id: customer.id } }">
           <div class="p-6 text-sm text-gray-700">
-            <p class="text-sm font-medium">{{ customer.city }}</p>
-            <p class="text-lg">{{ customer.commercial_name }}</p>
-            <span v-if="customer.registrationExpireAlert"
-                  class="inline-block mt-1 bg-gray-100 rounded-full px-3 py-1 text-xs font-medium">
-              <Icon name="fa-regular:calendar" class="mr-1 translate-y-[1px]" />
-              {{ customer.registrationExpireAlert.toDate().toLocaleDateString('nl-NL', { year: 'numeric', month: '2-digit', day: '2-digit' }) }}
-            </span>
+            <div class="flex justify-between">
+              <p class="text-sm font-medium">
+                <Icon name="fa-solid:map-marker-alt" class="mr-1 translate-y-[1.4px]" />
+                {{ customer.city }}
+              </p>
+              <p class="text-sm font-medium">
+                <Icon name="fa-solid:calendar-day" class="mr-1 translate-y-[1px]" />
+                {{ customer.registrationExpireAlert?.toDate().toLocaleDateString('nl-NL', { year: 'numeric', month: '2-digit', day: '2-digit' }) }}
+              </p>
+            </div>
+            <p class="text-lg mt-[1px]">{{ customer.commercial_name }}</p>
           </div>
         </NuxtLink>
       </div>
