@@ -2,7 +2,7 @@
   <div v-if="isEmailFormOpen" class="fixed inset-0 z-40 bg-black/[var(--bg-opacity)] [--bg-opacity:50%]" @click.self="closeEmailForm">
     <div class="fixed top-0 right-0 h-full bg-white w-full md:w-120 shadow-lg z-50">
       <div class="flex justify-between items-center bg-white h-14 px-6 border-b border-gray-200">
-        <h2 class="text-lg">Send email</h2>
+        <h2 class="text-lg">Plan Inspection</h2>
         <SquareButton @click="closeEmailForm" class="">
           <Icon name="fa-solid:times" />
         </SquareButton>
@@ -48,12 +48,13 @@ const formData = ref<Email>({ to: [''], message: { subject: '', text: '', html: 
 
 watch(currentCustomer, (newCustomer) => {
   if (newCustomer) {
+    const formattedDate = newCustomer.registrationExpireAlert?.toDate().toLocaleDateString('nl-NL', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' });
     formData.value = {
       to: [newCustomer.email],
       message: {
-        subject: 'Plan inspection before ' + `${newCustomer.registrationExpireAlert?.toDate().toLocaleDateString()}`,
+        subject: 'Plan inspection before ' + `${formattedDate}`,
         text: 'Hi, ' + `${newCustomer.commercial_name}` + '\nWe would like to plan an inspection '
-        + 'before ' + `${newCustomer.registrationExpireAlert?.toDate().toLocaleDateString()}`
+        + 'before ' + `${formattedDate}`
         + '. Please contact us to plan the inspection.',
         html: ''
       }
