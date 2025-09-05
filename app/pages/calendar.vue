@@ -15,6 +15,6 @@ const { setBreadcrumbs } = useBreadcrumbs();
 
 setBreadcrumbs([
   { text: 'Dashboard', to: '/' },
-  { text: 'Calendar', to: '/calendar' },
+  { text: 'Calendar', to: '' },
 ]);
 </script>

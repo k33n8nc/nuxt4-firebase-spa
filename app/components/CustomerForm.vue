@@ -3,9 +3,9 @@
     <div class="fixed top-0 right-0 h-full bg-white w-full md:w-120 shadow-lg z-50">
       <div class="flex justify-between items-center bg-white h-14 px-6 border-b border-gray-200">
         <h2 class="text-lg">{{ editingCustomer ? 'Edit Customer' : 'Add Customer' }}</h2>
-        <Button @click="closeCustomerForm" class="">
+        <SquareButton @click="closeCustomerForm" class="">
           <Icon name="fa-solid:times" />
-        </Button>
+        </SquareButton>
       </div>
       <form @submit.prevent="submitForm" class="grid grid-cols-2 gap-4 px-6 py-8">
         <div class="col-span-2">
@@ -45,12 +45,12 @@
         </div>
 
         <div class="col-span-2 flex justify-between mt-4">
-          <Button v-if="editingCustomer" @click="removeCustomer" type="button" class="bg-red-500 hover:bg-red-700 mr-3">
+          <SquareButton v-if="editingCustomer" @click="removeCustomer" type="button" class="bg-red-500 hover:bg-red-700 mr-3">
             <Icon name="fa-solid:trash" />
-          </Button>
-          <Button type="submit" class="w-full">
+          </SquareButton>
+          <SquareButton type="submit" class="w-full">
             {{ editingCustomer ? 'Update Customer' : 'Add Customer' }}
-          </Button>
+          </SquareButton>
         </div>
       </form>
     </div>
@@ -61,12 +61,10 @@
 import { useCustomerForm } from '~/composables/useCustomerForm';
 import type { Customer } from '#shared/types/customer';
 
-const emit = defineEmits(['customer-updated']);
-
 const { isCustomerFormOpen, editingCustomer, closeCustomerForm } = useCustomerForm();
 const customerStore = useCustomerStore();
 
-const createEmptyForm = (): Omit<Customer, "id" | "createdAt"> => ({
+const createEmptyForm = (): Omit<Customer, "id" | "createdAt" | "registrationExpireAlert"> => ({
   commercial_name: "",
   street_name: "",
   house_number: "",
@@ -76,7 +74,7 @@ const createEmptyForm = (): Omit<Customer, "id" | "createdAt"> => ({
   phone: "",
 });
 
-const formData = ref<Omit<Customer, "id" | "createdAt">>(createEmptyForm());
+const formData = ref<Omit<Customer, "id" | "createdAt" | "registrationExpireAlert">>(createEmptyForm());
 
 watch(
   editingCustomer,
@@ -113,7 +111,6 @@ const submitForm = async () => {
   } else {
     await customerStore.addCustomer(formData.value);
   }
-  emit('customer-updated');
   formData.value = createEmptyForm();
   closeCustomerForm();
 };
@@ -121,7 +118,6 @@ const submitForm = async () => {
 const removeCustomer = async () => {
   if (editingCustomer.value) {
     await customerStore.removeCustomer(editingCustomer.value.id);
-    emit('customer-updated');
     closeCustomerForm();
     await navigateTo('/customers');
   }

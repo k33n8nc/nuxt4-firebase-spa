@@ -1,9 +1,5 @@
 import { ref } from 'vue'
-
-export interface Breadcrumb {
-  text: string
-  to?: string
-}
+import type { Breadcrumb } from '#shared/types/breadcrumb'
 
 const breadcrumbs = ref<Breadcrumb[]>([])
 
