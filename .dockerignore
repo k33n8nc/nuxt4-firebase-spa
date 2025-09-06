@@ -1,0 +1,22 @@
+# This file tells Docker to ignore certain files and directories
+# when building the image. This keeps the build context small and
+# prevents sensitive or unnecessary files from being included.
+
+# Build artifacts
+.output
+.nuxt
+dist
+
+# Dependencies
+node_modules
+
+# Git files
+.git
+.gitignore
+
+# Docker files
+Dockerfile
+docker-compose.yml
+
+# Environment variables
+.env
