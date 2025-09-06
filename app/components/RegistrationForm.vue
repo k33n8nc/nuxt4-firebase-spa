@@ -3,9 +3,9 @@
     <div class="fixed top-0 right-0 h-full bg-white w-full md:w-120 shadow-lg z-50">
       <div class="flex justify-between items-center bg-white h-14 px-6 border-b border-gray-200">
         <h2 class="text-lg">{{ editingRegistration ? 'Edit Registration' : 'Add Registration' }}</h2>
-        <Button @click="closeRegistrationForm" class="">
+        <SquareButton @click="closeRegistrationForm" class="">
           <Icon name="fa-solid:times" />
-        </Button>
+        </SquareButton>
       </div>
       <form @submit.prevent="submitForm" class="grid grid-cols-2 gap-4 px-6 py-8">
         <div>
@@ -34,13 +34,19 @@
                  class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-gray-800" />
         </div>
 
+        <div>
+          <label for="validTo" class="block text-sm text-gray-400">Valid to</label>
+          <input type="date" id="validTo" v-model="validToDateString" required
+                 class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:border-gray-800" />
+        </div>
+
         <div class="col-span-2 flex justify-between mt-4">
-        <Button v-if="editingRegistration" @click="removeRegistration" type="button" class="bg-red-500 hover:bg-red-700 mr-3">
+        <SquareButton v-if="editingRegistration" @click="removeRegistration" type="button" class="bg-red-500 hover:bg-red-700 mr-3">
           <Icon name="fa-solid:trash" />
-        </Button>
-        <Button type="submit" class="w-full">
+        </SquareButton>
+        <SquareButton type="submit" class="w-full">
           {{ editingRegistration ? 'Update Registration' : 'Add Registration' }}
-        </Button>
+        </SquareButton>
         </div>
 
       </form>
@@ -50,7 +56,9 @@
 
 <script setup lang="ts">
 import { useRegistrationForm } from '~/composables/useRegistrationForm';
+import { Timestamp } from 'firebase/firestore';
 import type { Registration } from '#shared/types/registration';
+import { computed } from 'vue';
 
 const { isRegistrationFormOpen, editingRegistration, closeRegistrationForm } = useRegistrationForm();
 const registrationStore = useRegistrationStore();
@@ -63,17 +71,42 @@ const createEmptyForm = (): Omit<Registration, "id"> => ({
   type: "",
   volume: 0,
   year: new Date().getFullYear(),
+  validTo: Timestamp.fromDate(new Date()), // Default to today
 });
 
 const formData = ref<Omit<Registration, "id">>(createEmptyForm());
+
+// Computed property to handle the date conversion
+const validToDateString = computed({
+  get() {
+    // Convert Timestamp to YYYY-MM-DD string for the input
+    if (formData.value.validTo && formData.value.validTo.toDate) {
+      const date = formData.value.validTo.toDate();
+      // Using UTC methods to avoid timezone issues
+      const year = date.getUTCFullYear();
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+    return '';
+  },
+  set(value: string) {
+    // Convert YYYY-MM-DD string from input back to a Timestamp
+    // The value is already in UTC 'YYYY-MM-DD', so new Date() will parse it as UTC midnight.
+    const date = new Date(value);
+    formData.value.validTo = Timestamp.fromDate(date);
+  }
+});
 
 watch(
   editingRegistration,
   (newRegistration) => {
     if (newRegistration) {
+      // When editing, populate formData from the store
       const { id, ...registrationData } = newRegistration;
       formData.value = registrationData;
     } else {
+      // When adding, use a fresh form
       formData.value = createEmptyForm();
     }
   },
@@ -81,6 +114,7 @@ watch(
 );
 
 const submitForm = async () => {
+  // formData.validTo is now always a valid Timestamp object
   if (editingRegistration.value) {
     await registrationStore.updateRegistration(customerId, editingRegistration.value.id, formData.value);
   } else {

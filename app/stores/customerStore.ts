@@ -1,10 +1,13 @@
 import { defineStore } from 'pinia';
-import { collection, getDocs, addDoc, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, type DocumentData, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, type DocumentData, writeBatch, onSnapshot, type Unsubscribe } from 'firebase/firestore';
 import { useNuxtApp } from '#app';
+import type {Customer} from "#shared/types/customer";
 
 export const useCustomerStore = defineStore('customerStore', {
     state: () => ({
         customers: [] as Customer[],
+        activeCustomer: null as Customer | null,
+        _customerUnsubscribe: null as Unsubscribe | null,
     }),
 
     actions: {
@@ -28,6 +31,41 @@ export const useCustomerStore = defineStore('customerStore', {
                 });
             } catch (error) {
                 console.error("Error fetching customers:", error);
+            }
+        },
+
+        listenToCustomerById(id: string) {
+            // Unsubscribe from any existing listener to prevent memory leaks and redundant reads
+            if (this._customerUnsubscribe) {
+                this._customerUnsubscribe();
+            }
+
+            const db = this._getDB();
+            const customerDocRef = doc(db, 'customers', id);
+
+            this._customerUnsubscribe = onSnapshot(customerDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    // Update the activeCustomer in the store's state
+                    this.activeCustomer = {
+                        id: docSnap.id,
+                        ...data,
+                        createdAt: data.createdAt?.toDate(),
+                    } as Customer;
+                } else {
+                    console.error("Customer not found:", id);
+                    this.activeCustomer = null;
+                }
+            }, (error) => {
+                console.error("Error listening to customer document:", error);
+                this.activeCustomer = null;
+            });
+        },
+
+        stopListeningToCustomer() {
+            if (this._customerUnsubscribe) {
+                this._customerUnsubscribe();
+                this._customerUnsubscribe = null;
             }
         },
 

@@ -5,9 +5,9 @@
              placeholder="Search"
              class="h-10 px-2 mr-4 flex-1 border border-gray-300 rounded focus:outline-none focus:border-gray-800"
       >
-      <Button @click="openCustomerForm()">
+      <SquareButton @click="openCustomerForm()">
         <Icon name="fa-solid:plus" />
-      </Button>
+      </SquareButton>
     </div>
     <CustomerList />
     <CustomerForm />

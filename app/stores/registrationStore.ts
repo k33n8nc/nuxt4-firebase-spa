@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { collection, getDocs, addDoc, doc, getDoc, updateDoc, deleteDoc, serverTimestamp, type DocumentData } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc, serverTimestamp, type DocumentData, collectionGroup, query } from 'firebase/firestore';
 import { useNuxtApp } from '#app';
 import type { Registration } from '#shared/types/registration';
 
@@ -13,6 +13,26 @@ export const useRegistrationStore = defineStore('registrationStore', {
         _getDB() {
             const { $firestore } = useNuxtApp();
             return $firestore;
+        },
+
+        async fetchAllRegistrations() {
+            this.isLoading = true;
+            try {
+                const db = this._getDB();
+                const registrationsQuery = query(collectionGroup(db, 'registrations'));
+                const querySnapshot = await getDocs(registrationsQuery);
+                this.registrations = querySnapshot.docs.map((doc: DocumentData) => {
+                    const data = doc.data();
+                    return {
+                        id: doc.id,
+                        ...data,
+                    } as Registration;
+                });
+            } catch (error) {
+                console.error("Error fetching all registrations:", error);
+            } finally {
+                this.isLoading = false;
+            }
         },
 
         async fetchRegistrations(customerId: string) {
@@ -32,25 +52,6 @@ export const useRegistrationStore = defineStore('registrationStore', {
                 console.error("Error fetching registrations:", error);
             } finally {
                 this.isLoading = false;
-            }
-        },
-
-        async fetchRegistrationById(customerId: string, registrationId: string): Promise<Registration | null> {
-            try {
-                const db = this._getDB();
-                const registrationDocRef = doc(db, 'customers', customerId, 'registrations', registrationId);
-                const docSnap = await getDoc(registrationDocRef);
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    return {
-                        id: docSnap.id,
-                        ...data,
-                    } as Registration;
-                }
-                return null;
-            } catch (error) {
-                console.error("Error fetching registration:", error);
-                return null;
             }
         },
 
