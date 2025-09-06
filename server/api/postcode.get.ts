@@ -3,7 +3,7 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
 
   // The actual API token should be stored in your .env file
-  const apiToken = config.public.postcodeApiToken;
+  const apiToken = config.postcodeApiToken;
 
   if (!postcode || !number) {
     throw createError({
