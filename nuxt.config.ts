@@ -7,6 +7,7 @@ export default defineNuxtConfig({
   ssr: false,
   modules: ['@nuxt/fonts', '@nuxt/icon', '@pinia/nuxt'],
   runtimeConfig: {
+    postcodeApiToken: process.env.POSTCODE_API_TOKEN,
     public: {
       firebaseApiKey: process.env.NUXT_PUBLIC_FIREBASE_API_KEY,
       firebaseAuthDomain: process.env.NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -14,7 +15,6 @@ export default defineNuxtConfig({
       firebaseStorageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
       firebaseMessagingSenderId: process.env.NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
       firebaseAppId: process.env.NUXT_PUBLIC_FIREBASE_APP_ID,
-      postcodeApiToken: process.env.POSTCODE_API_TOKEN,
     }
   },
   fonts: {
