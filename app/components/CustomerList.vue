@@ -20,7 +20,12 @@
                 {{ customer.registrationExpireAlert?.toDate().toLocaleDateString('nl-NL', { year: 'numeric', month: '2-digit', day: '2-digit' }) }}
               </p>
             </div>
-            <p class="text-lg mt-[1px]">{{ customer.commercial_name }}</p>
+            <div class="flex justify-between items-center">
+              <p class="text-lg mt-[1px]">{{ customer.commercial_name }}</p>
+<!--              <span class="bg-green-600 rounded text-white text-sm px-2">ingepland op 10-04-2025</span>-->
+<!--              <span class="bg-amber-600 rounded text-white text-sm px-2">uitgenodig op 10-02-2025</span>-->
+            </div>
+
           </div>
         </NuxtLink>
       </div>
@@ -42,14 +47,31 @@ const customerStore = useCustomerStore();
 const isLoading = ref(false);
 
 const filteredCustomers = computed(() => {
-  if (!props.searchQuery) {
-    return customerStore.customers;
+  let customers = customerStore.customers;
+
+  // 1. Filter based on search query
+  if (props.searchQuery) {
+    const lowerCaseQuery = props.searchQuery.toLowerCase();
+    customers = customers.filter(customer =>
+      customer.commercial_name.toLowerCase().includes(lowerCaseQuery) ||
+      customer.city.toLowerCase().includes(lowerCaseQuery)
+    );
   }
-  const lowerCaseQuery = props.searchQuery.toLowerCase();
-  return customerStore.customers.filter(customer =>
-    customer.commercial_name.toLowerCase().includes(lowerCaseQuery) ||
-    customer.city.toLowerCase().includes(lowerCaseQuery)
-  );
+
+  // 2. Sort the (filtered) list
+  // Use slice() to create a shallow copy before sorting to avoid mutating the original store state
+  return customers.slice().sort((a, b) => {
+    const dateA = a.registrationExpireAlert;
+    const dateB = b.registrationExpireAlert;
+
+    // Push customers without a date to the end of the list
+    if (dateA && !dateB) return -1;
+    if (!dateA && dateB) return 1;
+    if (!dateA && !dateB) return 0;
+
+    // Sort ascending (oldest date first)
+    return dateA.toMillis() - dateB.toMillis();
+  });
 });
 
 // Fetch customers when the component is mounted

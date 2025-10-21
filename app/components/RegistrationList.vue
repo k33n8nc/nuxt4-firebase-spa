@@ -61,14 +61,23 @@ const { openRegistrationForm } = useRegistrationForm();
 const isLoading = computed(() => registrationStore.isLoading);
 
 const filteredRegistrations = computed(() => {
-  if (!props.searchQuery) {
-    return registrationStore.registrations;
+  let registrations = registrationStore.registrations;
+
+  // 1. Filter based on search query
+  if (props.searchQuery) {
+    const lowerCaseQuery = props.searchQuery.toLowerCase();
+    registrations = registrations.filter(registration => {
+      const label = registration.registrationLabel?.toLowerCase() || '';
+      const id = registration.registrationId?.toLowerCase() || '';
+      return label.includes(lowerCaseQuery) || id.includes(lowerCaseQuery);
+    });
   }
-  const lowerCaseQuery = props.searchQuery.toLowerCase();
-  return registrationStore.registrations.filter(registration => {
-    const label = registration.registrationLabel?.toLowerCase() || '';
-    const id = registration.registrationId?.toLowerCase() || '';
-    return label.includes(lowerCaseQuery) || id.includes(lowerCaseQuery);
+
+  // 2. Sort the (filtered) list by `validTo` date
+  // Use slice() to create a shallow copy before sorting to avoid mutating the original store state
+  return registrations.slice().sort((a, b) => {
+    // Sort ascending (oldest date first)
+    return a.validTo.toMillis() - b.validTo.toMillis();
   });
 });
 
