@@ -67,6 +67,7 @@ const customerId = route.params.id as string;
 
 const createEmptyForm = (): Omit<Registration, "id"> => ({
   registrationId: "",
+  customerId: `${customerId}`,
   registrationLabel: "",
   type: "",
   volume: 0,
@@ -114,10 +115,15 @@ watch(
 );
 
 const submitForm = async () => {
-  // formData.validTo is now always a valid Timestamp object
   if (editingRegistration.value) {
-    await registrationStore.updateRegistration(customerId, editingRegistration.value.id, formData.value);
+    await registrationStore.updateRegistration(
+        editingRegistration.value.customerId,
+        editingRegistration.value.id,
+        formData.value
+    );
   } else {
+    // For new registrations, customerId comes from route for now
+    // Later: replace with selected customer from dropdown
     await registrationStore.addRegistration(customerId, formData.value);
   }
   formData.value = createEmptyForm();
@@ -126,8 +132,12 @@ const submitForm = async () => {
 
 const removeRegistration = async () => {
   if (editingRegistration.value) {
-    await registrationStore.removeRegistration(customerId, editingRegistration.value.id);
+    await registrationStore.removeRegistration(
+        editingRegistration.value.customerId,
+        editingRegistration.value.id
+    );
     closeRegistrationForm();
   }
 };
+
 </script>
