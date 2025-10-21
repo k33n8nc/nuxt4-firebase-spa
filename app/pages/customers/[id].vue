@@ -3,14 +3,15 @@
     <ThreeCards />
     <div class="flex justify-between items-center">
       <input type="text"
-             placeholder="Search"
+             v-model="searchQuery"
+             placeholder="Search by registration ID or label..."
              class="h-10 px-2 flex-1 border border-gray-300 rounded focus:outline-none focus:border-gray-800"
       >
     </div>
     <div v-if="isLoading">
       Loading customer details...
     </div>
-    <RegistrationList v-else-if="customerId" :customer-id="customerId" />
+    <RegistrationList v-else-if="customerId" :customer-id="customerId" :search-query="searchQuery" />
     <div v-else>
       <p>Customer not found.</p>
     </div>
@@ -21,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, computed, onUnmounted } from 'vue';
+import { watch, computed, onUnmounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCustomerStore } from '~/stores/customerStore';
 import { useBreadcrumbs } from '~/composables/useBreadcrumbs';
@@ -33,6 +34,8 @@ const route = useRoute();
 
 // Create a reactive reference to the store's state. `customer` will automatically update.
 const { activeCustomer: customer } = storeToRefs(customerStore);
+
+const searchQuery = ref('');
 
 const customerId = computed(() => Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
 

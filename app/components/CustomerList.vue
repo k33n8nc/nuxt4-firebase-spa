@@ -1,7 +1,10 @@
 <template>
   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
     <div v-if="isLoading">Loading customers...</div>
-      <div v-for="customer in customerStore.customers"
+    <div v-else-if="filteredCustomers.length === 0" class="col-span-full">
+      No customers found.
+    </div>
+      <div v-else v-for="customer in filteredCustomers"
            :key="customer.id"
            class="shadow rounded"
       >
@@ -25,11 +28,29 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useCustomerStore } from '@/stores/customerStore';
+
+const props = defineProps({
+  searchQuery: {
+    type: String,
+    default: '',
+  },
+});
 
 const customerStore = useCustomerStore();
 const isLoading = ref(false);
+
+const filteredCustomers = computed(() => {
+  if (!props.searchQuery) {
+    return customerStore.customers;
+  }
+  const lowerCaseQuery = props.searchQuery.toLowerCase();
+  return customerStore.customers.filter(customer =>
+    customer.commercial_name.toLowerCase().includes(lowerCaseQuery) ||
+    customer.city.toLowerCase().includes(lowerCaseQuery)
+  );
+});
 
 // Fetch customers when the component is mounted
 onMounted(async () => {
