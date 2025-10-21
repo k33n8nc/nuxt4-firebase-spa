@@ -40,14 +40,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRegistrationStore } from '~/stores/registrationStore';
 import { useRegistrationForm } from '~/composables/useRegistrationForm';
 
 const props = defineProps({
   customerId: {
     type: String,
-    required: true,
+    required: false,
   },
   searchQuery: {
     type: String,
@@ -72,5 +72,11 @@ const filteredRegistrations = computed(() => {
   });
 });
 
-registrationStore.fetchRegistrations(props.customerId);
+onMounted(() => {
+  if (props.customerId) {
+    registrationStore.fetchRegistrations(props.customerId);
+  } else {
+    registrationStore.fetchAllRegistrations();
+  }
+});
 </script>
